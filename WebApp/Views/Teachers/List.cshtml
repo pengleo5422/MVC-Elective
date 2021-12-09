@@ -1,0 +1,53 @@
+﻿@model WebApp.Models.Teach
+
+@{
+    ViewData["Title"] = "學生名單";
+    Layout = "_Layout Teacher";
+}
+
+<h1>選課學生名單</h1>
+
+<div>
+    <hr />
+    <dl class="row">
+        
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(m =>m.Course)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(m =>m.Course)
+            </dd>
+        
+        <dt class="col-sm-2">
+            學生資料
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+
+
+                <tr>
+                    <td>
+                        學號
+                    </td>
+                    <td>
+                        學生姓名
+                    </td>
+
+                </tr>
+
+                @foreach (var item in Model.Enrollment)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Students.Account)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Students.Name)
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>

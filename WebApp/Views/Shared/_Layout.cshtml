@@ -1,0 +1,58 @@
+﻿@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+
+<!DOCTYPE html>
+
+@{ var welcome = @HttpContextAccessor.HttpContext.Session.GetString("Welcome");}
+<html lang="zh-Hant-TW">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>@ViewData["Title"] 選課系統</title>
+
+    <link rel="stylesheet" href="~/assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,700,300italic,400italic,700italic">
+    <link rel="stylesheet" href="~/assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="~/assets/fonts/simple-line-icons.min.css">
+    <link rel="stylesheet" href="~/assets/css/untitled.css">
+</head>
+
+<body>
+    <div class="container">
+    <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom ">
+        <div>
+            <a class="navbar-brand" asp-area="" asp-controller="Teaches" asp-action="Pindex">學生選課</a>
+            <a class="navbar-brand" asp-area="" asp-controller="Students" asp-action="Curriculum">編輯選課名單(退選)</a>
+        </div>
+
+        <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+            <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap"><use xlink:href="#bootstrap" /></svg>
+        </a>
+
+        <div class="col-md-3 text-end ">
+            <a type="button" class="btn btn-outline-primary me-2" asp-area="" asp-controller="Students" asp-action="Edit">@welcome</a>
+            <a type="button" class="btn btn-primary" asp-controller="Students" asp-action="Logout">登出</a>
+
+        </div>
+    </header>
+</div>
+    
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - 選課系統- <a asp-area="" asp-controller="teaches" asp-action="sindex">選課</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>
+

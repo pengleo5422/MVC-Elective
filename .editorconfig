@@ -1,0 +1,4 @@
+﻿[*.cs]
+
+# CA1707: 識別項不應包含底線
+dotnet_diagnostic.CA1707.severity = suggestion

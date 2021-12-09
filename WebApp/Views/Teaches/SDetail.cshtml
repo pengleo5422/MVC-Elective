@@ -1,0 +1,71 @@
+﻿@model WebApp.Models.Teach
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var Member = @HttpContextAccessor.HttpContext.Session.GetInt32("member");
+    if (Member == null)
+    {
+        Layout = "_Layout Login";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
+    ViewData["Title"] = "詳情";
+}
+
+<h1>詳情</h1>
+
+<div class="container">
+    <div>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Course)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Course)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Name)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.ClassDate)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.ClassDate)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Rating)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Rating)
+            </dd>
+
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Classroom)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Classroom)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Category)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Category)
+            </dd>
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.credit)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.credit)
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <a asp-action="Pindex">回到課程清單</a>
+    </div>
+    </div>

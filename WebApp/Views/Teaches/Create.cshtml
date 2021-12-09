@@ -1,0 +1,96 @@
+﻿@model WebApp.Models.Teach
+@using Microsoft.AspNetCore.Http;
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    ViewData["Title"] = "新增課程";
+    Layout = "_Layout Teacher";
+    var Name = HttpContextAccessor.HttpContext.Session.GetString("Name");
+
+}
+
+<h1>新增課程</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <!--aria-label="readonly input example" readonly-->
+            <div class="form-group">
+                <label asp-for="Course" class="control-label"></label>
+                <input asp-for="Course" class="form-control" />
+                <span asp-validation-for="Course" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                @if (Name != null)
+                {
+                    <input asp-for="Name" class="form-control" value="@Name" readonly />
+                }
+                else
+                {
+                    <input asp-for="Name" class="form-control" />
+                }
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ClassDate" class="control-label"></label>
+                <input asp-for="ClassDate" class="form-control" />
+                <span asp-validation-for="ClassDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <select id="Rating" name="Rating" class="form-control">
+                    <option value="星期一">星期一</option>
+                    <option value="星期二">星期二</option>
+                    <option value="星期三">星期三</option>
+                    <option value="星期四">星期四</option>
+                    <option value="星期五">星期五</option>
+                </select>
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Classroom" class="control-label"></label>
+                <input asp-for="Classroom" class="form-control" />
+                <span asp-validation-for="Classroom" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Category" class="control-label"></label>
+                <select id=" Category" name="Category" class="form-control">
+                    <option value="必修">必修</option>
+                    <option value="選修">選修</option>
+                    <option value="體育">體育</option>
+                    <option value="文學">文學</option>
+                </select>
+                <span asp-validation-for="Category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="credit" class="control-label"></label>
+                <input asp-for="credit" class="form-control" />
+                <span asp-validation-for="credit" class="text-danger"></span>
+            </div>
+            <div>
+                <label>
+
+                </label>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="新增" class="btn btn-primary" />
+            </div>
+            <div>
+                <label>
+
+                </label>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">回到課程清單</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

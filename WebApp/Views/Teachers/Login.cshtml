@@ -1,0 +1,36 @@
+﻿@model WebApp.Models.Teacher
+
+@{
+    Layout = "_Layout Login";
+    ViewBag.Title = "教師登入";
+}
+<h2>教師登入</h2>
+
+<a asp-controller="Teachers" asp-action="login" class="btn btn-primary"> 教師 </a>
+<a asp-controller="students" asp-action="login" class="btn btn-primary "> 學生</a>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Login">
+            <div class="form-group">
+                <label asp-for="Account" class="control-label">帳號</label>
+                <input asp-for="Account" class="form-control" />
+                <span asp-validation-for="Account" class="text-danger"></span>
+                <small id="emailHelp" class="form-text text-muted  col-md-10">請輸入教師證號碼</small>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password" class="control-label">密碼</label>
+                <input asp-for="Password" class="form-control" type="password" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+                <small id="emailHelp" class="form-text text-muted col-md-10">請輸入數字</small>
+
+            </div>
+            <div class="form-group">
+                <input type="submit" value="登入" class="btn btn-primary" />
+                @ViewBag.message
+            </div>
+        </form>
+    </div>
+</div>

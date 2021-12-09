@@ -1,0 +1,452 @@
+﻿@model WebApp.Models.Department_Genres;
+@using Microsoft.AspNetCore.Http;
+
+@inject IHttpContextAccessor HttpContextAccessor
+@{var Member = HttpContextAccessor.HttpContext.Session.GetString("Student");
+    if (Member == null)
+    {
+        Layout = "_Layout Login";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
+    ViewData["Title"] = "課程";
+    string[,] courseAry = new string[9, 6]; //week,time
+    string[,] TeacherAry = new string[9, 6]; //week,time
+    int numtime = 0;
+    int numweek = 0;
+    if (Member != null)
+    {
+        foreach (var cc in Model.MyCourse.Enrollment)
+        {
+            string week = cc.Teach.Rating;
+            char[] time = cc.Teach.ClassDate.ToCharArray();
+
+            switch (week)
+            {
+                case "星期一":
+                    numweek = 1;
+                    break;
+                case "星期二":
+                    numweek = 2;
+                    break;
+                case "星期三":
+                    numweek = 3;
+                    break;
+                case "星期四":
+                    numweek = 4;
+                    break;
+                case "星期五":
+                    numweek = 5;
+                    break;
+            }
+            foreach (var itemtime in time)
+            {
+                switch (itemtime)
+                {
+                    case 'A':
+                        numtime = 1;
+                        break;
+                    case 'B':
+                        numtime = 2;
+                        break;
+                    case 'C':
+                        numtime = 3;
+                        break;
+                    case 'D':
+                        numtime = 4;
+                        break;
+                    case 'E':
+                        numtime = 5;
+                        break;
+                    case 'F':
+                        numtime = 6;
+                        break;
+                    case 'G':
+                        numtime = 7;
+                        break;
+                    case 'H':
+                        numtime = 8;
+                        break;
+                }
+                courseAry[numtime, numweek] = cc.Teach.Course;
+                TeacherAry[numtime, numweek] = cc.Teach.Name;
+            }
+
+        }
+    }
+}
+
+
+<h1>課程</h1>
+
+@{
+
+    var tempval = TempData["error"];
+    if (tempval != null)
+    {
+        if (tempval.ToString() == "99")
+        {
+            <table class=" table">
+                <tr class="alert alert-danger" role="alert">
+                    <td>已選過此課程</td>
+                </tr>
+            </table>
+        }
+        if (tempval.ToString() == "98")
+        {
+            <table class=" table">
+                <tr class="alert alert-danger" role="alert">
+                    <td>學分數已超過上限25學分</td>
+                </tr>
+            </table>
+        }
+        if (tempval.ToString() == "97")
+        {
+            <table class=" table">
+                <tr class="alert alert-danger" role="alert">
+                    <td>有衝堂，請先將衝堂的課刪除</td>
+                </tr>
+            </table>
+        }
+        TempData["error"] = null;
+    }
+}
+<div>
+    <div class="container">
+        <div class="row">
+            <div class="col col-md-4">
+                <form id="form1"asp-action="GetCarOwners" method="post" >
+                    <p>
+                        課程名稱: <input type="text" name="MainContent_Course"id="MainContent_Course" />
+                    </p>
+                    <p>
+                        教師名稱: <input type="text" name="MainContent_TeacherName" id="MainContent_TeacherName" class="control-label" />
+                    </p>
+                    <p>
+                        類別:  <select id="MainContent_Category" name="MainContent_Category" class="control-label">
+                            <option value=""></option>
+                            <option value="必修">必修</option>
+                            <option value="選修">選修</option>
+                            <option value="體育">體育</option>
+                            <option value="文學">文學</option>
+                        </select>
+
+                    </p>
+                    <p>
+                        星期: <select id="MainContent_Rating" name="MainContent_Rating" class="control-label">
+                            <option value=""></option>
+                            <option value="星期一">星期一</option>
+                            <option value="星期二">星期二</option>
+                            <option value="星期三">星期三</option>
+                            <option value="星期四">星期四</option>
+                            <option value="星期五">星期五</option>
+                        </select>
+                    </p>
+                    <div>
+                        <label>時段:  </label>
+                    </div>
+                    <div>
+                        <label><input type="checkbox" name="MainContent_Date" id="MainContent_Date" value="A"> A 08:10~09:00</label>
+                        <label><input type="checkbox" name="MainContent_Date"id="MainContent_Date" value="B"> B 09:10~10:00 </label>
+                        <label><input type="checkbox" name="MainContent_Date"id="MainContent_Date" value="C"> C 10:10~11:00 </label>
+                    </div>
+                    <div>
+                        <label><input type="checkbox" name="MainContent_Date" id="MainContent_Date"value="D"> D 11:10~12:00 </label>
+                        <label><input type="checkbox" name="MainContent_Date" id="MainContent_Date"value="E"> E 13:10~14:00 </label>
+                        <label><input type="checkbox" name="MainContent_Date"id="MainContent_Date" value="F"> F 14:10~15:00 </label>
+
+                    </div>
+                    <div>
+                        <label><input type="checkbox" name="MainContent_Date" id="MainContent_Date"value="G"> G 15:10~16:00 </label>
+                        <label><input type="checkbox" name="MainContent_Date"id="MainContent_Date" value="H"> H 16:10~17:00 </label>
+                        <label><input type="checkbox" name="MainContent_Date"id="MainContent_Date" value="I"> I 18:10~19:00 </label>
+                        <label><input type="checkbox" name="MainContent_Date"id="MainContent_Date" value="J"> J 19:10~20:00 </label>
+                    </div>
+
+
+                    <p><input type="submit" value="搜尋" onclick="getCarownersUsingAjax()"/></p>
+
+                </form>
+            </div>
+            <div class="col-md-8">
+
+
+                <div class="table-responsive">
+                    <table class="table table-bordered  text-center table-sm">
+                        <thead>
+                            <tr class="bg-light-gray">
+                                <th class="text-uppercase">
+                                    時間
+                                </th>
+                                <th class="text-uppercase">星期一</th>
+                                <th class="text-uppercase">星期二</th>
+                                <th class="text-uppercase">星期三</th>
+                                <th class="text-uppercase">星期四</th>
+                                <th class="text-uppercase">星期五</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="align-middle">A(08:10 - 09:00)</td>
+                                <td>
+                                    <span class="  -  font-size16 xs-font-size13 bg-info text-white">@courseAry[1, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[1, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[1, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[1, 2]</div>
+                                </td>
+
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[1, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[1, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[1, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[1, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[1, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[1, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">B(09:10 - 10:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[2, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[2, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[2, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[2, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[2, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[2, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[2, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[2, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[2, 5]</span>
+
+                                    <div class=" font-size14">@TeacherAry[2, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">C(10:10 - 11:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[3, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[3, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[3, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[3, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[3, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[3, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[3, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[3, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[3, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[3, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">D(11:10 - 12:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[4, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[4, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[4, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[4, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[4, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[4, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[4, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[4, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[4, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[4, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">12:00 - 13:00</td>
+                                <td colspan="5">
+                                    <div class=" font-size14">休息</div>
+                                </td>
+
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">E(13:10 - 14:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[5, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[5, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[5, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[5, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[5, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[5, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[5, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[5, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[5, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[5, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">F(14:10 - 15:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[6, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[6, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[6, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[6, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[6, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[6, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[6, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[6, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[6, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[6, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">G(15:10 - 16:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white bg-infobg-info">@courseAry[7, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[7, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[7, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[7, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[7, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[7, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[7, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[7, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[7, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[7, 5]</div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="align-middle">H(16:10 - 17:00)</td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[8, 1]</span>
+                                    <div class=" font-size14">@TeacherAry[8, 1]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[8, 2]</span>
+                                    <div class=" font-size14">@TeacherAry[8, 2]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[8, 3]</span>
+                                    <div class=" font-size14">@TeacherAry[8, 3]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[8, 4]</span>
+                                    <div class=" font-size14">@TeacherAry[8, 4]</div>
+                                </td>
+                                <td>
+                                    <span class="  -  font-size16  xs-font-size13 bg-info text-white">@courseAry[8, 5]</span>
+                                    <div class=" font-size14">@TeacherAry[8, 5]</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+    <table id="owner-table" class="table table-striped">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="sindex" asp-route-sortOrder="@ViewData["CourseSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">課程</a>
+                </th>
+                <th>
+                    姓名
+                </th>
+                <th>
+                    <a asp-action="sindex" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">時段</a>
+                </th>
+                <th>
+                    <a asp-action="sindex" asp-route-sortOrder="@ViewData["WeekSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">星期</a>
+                </th>
+
+                <th>
+                    教室
+                </th>
+                <th>
+                    類別
+                </th>
+                <th>
+                    學分
+                </th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+        </div>
+</div>
+
+@{
+    var prevDisabled = !Model.teachs.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.teachs.HasNextPage ? "disabled" : "";
+}
+<a asp-action="Pindex"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.teachs.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    前一頁
+</a>
+<a asp-action="Pindex"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.teachs.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    下一頁
+</a>
+
+

@@ -1,0 +1,89 @@
+﻿@model WebApp.Models.Teacher
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "_Layout Teacher";
+}
+
+<h1>課程名單</h1>
+
+<div> 
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            課程資料
+        </dt>
+        <dd class="col-sm-10">
+            <table class="table">
+
+
+                
+                    <tr>
+                        <td>
+                            課程
+                        </td>
+                        <td>
+                            教師姓名
+                        </td>
+                        <td>
+                            時段
+                        </td>
+
+                        <td>
+                            星期
+                        </td>
+                        <td>
+                            教室
+                        </td>
+                        <td>
+                            類別
+                        </td>
+                        <td>
+                            學分
+                        </td>
+                        
+                    </tr>
+                
+                @foreach (var item in Model.CourseAssignment)
+                {
+
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.Course)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.Name)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.ClassDate)
+                        </td>
+
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.Rating)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.Classroom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.Category)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Teach.credit)
+                        </td>
+                        <td>
+                            <a asp-controller="Teachers" asp-action="List" asp-route-id="@item.TeachID">學生名單</a> |
+                            <a asp-controller="teaches" asp-action="Edit" asp-route-id="@item.TeachID">編輯</a> |
+                            <a asp-controller="teaches" asp-action="Delete" asp-route-id="@item.TeachID">刪除</a>
+                        </td>
+                    </tr>
+                }
+            </table>
+        </dd>
+    </dl>
+</div>

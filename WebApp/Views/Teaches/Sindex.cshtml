@@ -1,0 +1,199 @@
+﻿@model PaginatedList<WebApp.Models.Teach>
+@using Microsoft.AspNetCore.Http;
+
+@inject IHttpContextAccessor HttpContextAccessor
+@{var Member = HttpContextAccessor.HttpContext.Session.GetString("Student");
+    if (Member == null)
+    {
+        Layout = "_Layout Login";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
+    ViewData["Title"] = "課程";
+
+}
+<h1>課程</h1>
+
+@{
+
+    var tempval = TempData["error"];
+    if (tempval != null)
+    {
+        if (tempval.ToString() == "99")
+        {
+            <table class=" table">
+                <tr class="alert alert-danger" role="alert">
+                    <td>已選過此課程</td>
+                </tr>
+            </table>
+        }
+        if (tempval.ToString() == "98")
+        {
+            <table class=" table">
+                <tr class="alert alert-danger" role="alert">
+                    <td>學分數已超過上限25學分</td>
+                </tr>
+            </table>
+        }
+        if (tempval.ToString() == "97")
+        {
+            <table class=" table">
+                <tr class="alert alert-danger" role="alert">
+                    <td>有衝堂，請先將衝堂的課刪除</td>
+                </tr>
+            </table>
+        }
+        TempData["error"] = null;
+    }
+}
+<form asp-controller="Teaches" asp-action="Sindex" method="get">
+    <p>
+        課程名稱: <input type="text" name="MainContent_Course" />
+    </p>
+    <p>
+        教師名稱: <input type="text" name="MainContent_TeacherName" class="control-label" />
+    </p>
+    <p>
+        　　類別:  <select id="MainContent_Category" name="MainContent_Category" class="control-label">
+            <option value=""></option>
+            <option value="必修">必修</option>
+            <option value="選修">選修</option>
+            <option value="體育">體育</option>
+            <option value="文學">文學</option>
+        </select>
+
+    </p>
+    <p>
+        　　星期: <select id="MainContent_Rating" name="MainContent_Rating" class="control-label">
+            <option value=""></option>
+            <option value="星期一">星期一</option>
+            <option value="星期二">星期二</option>
+            <option value="星期三">星期三</option>
+            <option value="星期四">星期四</option>
+            <option value="星期五">星期五</option>
+        </select>
+    </p>
+  
+    <div>
+        <label>　　時段: <input type="checkbox" name="MainContent_Date" value="A"> A 08:10~09:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="B"> B 09:10~10:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="C"> C 10:10~11:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="D"> D 11:10~12:00 </label>
+    </div>
+    <div>
+        <label>　　　　  </label>
+        <label><input type="checkbox" name="MainContent_Date" value="E"> E 13:10~14:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="F"> F 14:10~15:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="G"> G 15:10~16:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="H"> H 16:10~17:00 </label>
+    </div>
+    <div>
+        <label>　　　　  </label>
+        <label><input type="checkbox" name="MainContent_Date" value="I"> I 18:10~19:00 </label>
+        <label><input type="checkbox" name="MainContent_Date" value="J"> J 19:10~20:00 </label>
+    </div>
+
+
+    <p>　　<input type="submit" value="搜尋" /></p>
+
+</form>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="sindex" asp-route-sortOrder="@ViewData["CourseSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">課程</a>
+            </th>
+            <th>
+                姓名
+            </th>
+            <th>
+                <a asp-action="sindex" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">時段</a>
+            </th>
+            <th>
+                <a asp-action="sindex" asp-route-sortOrder="@ViewData["WeekSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">星期</a>
+            </th>
+
+            <th>
+                教室
+            </th>
+            <th>
+                類別
+            </th>
+            <th>
+                學分
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Course)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ClassDate)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Rating)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Classroom)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.credit)
+                </td>
+                <td>
+                    @{
+                        if (Member != null)
+                        {
+                            <a asp-controller="Enrollments" asp-action="Add1" asp-route-id="@item.ID">加選</a>
+                            <font>|</font>
+                        }
+                    }
+                    <a asp-action="SDetail" asp-route-id="@item.ID">詳情</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Sindex"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    前一頁
+</a>
+<a asp-action="Sindex"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    下一頁
+</a>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function (event) {
+        var scrollpos = localStorage.getItem('scrollpos');
+        if (scrollpos) window.scrollTo(0, scrollpos);
+    });
+
+    window.onbeforeunload = function (e) {
+        localStorage.setItem('scrollpos', window.scrollY);
+    };
+</script>
+
